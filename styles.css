@@ -18,19 +18,19 @@ nav {
     font-size: 1.5em;
     font-weight: bold;
     display: flex;
-    align-items: center; /* Alinha o e-mail com o texto */
+    align-items: center;
 }
 
 .user-email {
-    margin-left: 20px; /* Espaçamento entre o nome do site e o e-mail */
-    font-size: 0.5em; /* Ajuste o tamanho da fonte se necessário */
-    color: white; /* Cor do texto do e-mail */
+    margin-left: 20px; 
+    font-size: 0.5em; 
+    color: white;
     font-weight: normal;
 }
 
 .user-email::before {
-    content: "Bem-vindo "; /* Adiciona a mensagem antes do e-mail */
-    font-weight: normal; /* Ajuste a fonte para diferenciar da mensagem */
+    content: "Bem-vindo "; 
+    font-weight: normal;
 }
 
 .nav-right {
@@ -97,7 +97,7 @@ table {
     box-shadow: 0 2px 15px rgba(64, 64, 64, 0.2);
     border-radius: 12px;
     overflow: hidden;
-    table-layout: fixed; /* Garante que a tabela mantenha o tamanho fixo */
+    table-layout: fixed;
 }
 
 table, th, td {
@@ -114,15 +114,13 @@ th {
     color: white;
 }
 
-/* Definir a largura fixa das colunas em porcentagem */
-th:nth-child(1), td:nth-child(1) { width: 20%; } /* Descrição */
-th:nth-child(2), td:nth-child(2) { width: 15%; } /* Categoria */
-th:nth-child(3), td:nth-child(3) { width: 12%; } /* Data */
-th:nth-child(4), td:nth-child(4) { width: 15%; } /* Valor */
-th:nth-child(5), td:nth-child(5) { width: 15%; } /* Forma de Pagamento */
-th:nth-child(6), td:nth-child(6) { width: 15%; } /* Ações */
+th:nth-child(1), td:nth-child(1) { width: 20%; }
+th:nth-child(2), td:nth-child(2) { width: 15%; } 
+th:nth-child(3), td:nth-child(3) { width: 12%; }
+th:nth-child(4), td:nth-child(4) { width: 15%; } 
+th:nth-child(5), td:nth-child(5) { width: 15%; } 
+th:nth-child(6), td:nth-child(6) { width: 15%; }
 
-/* Limitar o número de caracteres exibidos na tabela */
 td {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -232,14 +230,12 @@ select:focus {
     border-color: #4CAF50;
 }
 
-/* Adicionar o símbolo de € à frente dos valores na tabela */
 td.amount::before {
     content: '€ ';
 }
 
-/* Indicador de Carregamento */
 .loading-indicator {
-    display: none; /* Inicialmente oculto */
+    display: none;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -248,7 +244,6 @@ td.amount::before {
     color: white;
     padding: 20px;
     border-radius: 8px;
-    /* Adicione uma animação de spinner se desejar */
 }
 
 .loading-indicator::before {
@@ -270,9 +265,9 @@ td.amount::before {
 
 .chart-container {
     display: flex;
-    justify-content: space-around; /* Espaçamento uniforme entre os gráficos */
+    justify-content: space-around;
     align-items: center;
-    flex-wrap: wrap; /* Para que gráficos fiquem um abaixo do outro se o espaço não for suficiente */
+    flex-wrap: wrap;
 }
 
 .chart {

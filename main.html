@@ -7,112 +7,101 @@
     <title>Expense Tracker</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Load Firebase libraries from CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase configuration -->
     <script src="firebase-config.js"></script>
 
-    <!-- App scripts -->
     <script src="script.js" defer></script>
 </head>
 
 <body>
-
-    <!-- Menu Superior -->
     <nav>
         <div class="nav-left">
             <strong>Expense Tracker</strong>
             <span id="user-email" class="user-email"></span>
         </div>
         <div class="nav-right">
-            <button onclick="showExpenseForm()">Criar Despesa</button>
-            <button onclick="showAnalysisModal()">Análise</button>
+            <button onclick="showExpenseForm()">Create Expense</button>
+            <button onclick="showAnalysisModal()">Analysis</button>
             <button onclick="logout()">Logout</button>
         </div>
     </nav>
 
-    <!-- Formulário de Criação/Edição de Despesas -->
     <div id="expense-form-container" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeExpenseForm()">&times;</span>
-            <h2>Registar Despesa</h2>
+            <h2>Register Expenses</h2>
             <form id="expense-form">
                 <input type="hidden" id="expense-id">
 
                 <div class="form-group">
-                    <label for="description">Descrição:</label>
+                    <label for="description">Description:</label>
                     <input type="text" id="description" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Categoria:</label>
+                    <label for="category">Category:</label>
                     <select id="category" required>
-                        <option value="Alimentação">Alimentação</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Educação">Educação</option>
-                        <option value="Saúde">Saúde</option>
-                        <option value="Lazer">Lazer</option>
-                        <option value="Escritório">Escritório</option>
-                        <!-- Adicione mais categorias conforme necessário -->
+                        <option value="Food">Food</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Education">Education</option>
+                        <option value="Health">Health</option>
+                        <option value="Leisure">Leisure</option>
+                        <option value="Office">Office</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="date">Data:</label>
+                    <label for="date">Date:</label>
                     <input type="date" id="date" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="amount">Valor:</label>
+                    <label for="amount">Value:</label>
                     <input type="number" id="amount" step="0.01" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="payment-method">Forma de Pagamento:</label>
+                    <label for="payment-method">Payment Method:</label>
                     <select id="payment-method" required>
-                        <option value="Dinheiro">Dinheiro</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Cartão de Débito">Cartão de Débito</option>
-                        <option value="Transferência Bancária">Transferência Bancária</option>
-                        <option value="Cheque">Cheque</option>
-                        <!-- Adicione mais formas de pagamento conforme necessário -->
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Check">Check</option>
                     </select>
                 </div>
 
-                <button type="submit">Guardar</button>
+                <button type="submit">Save</button>
             </form>
         </div>
     </div>
 
     <div id="loading-indicator" class="loading-indicator"></div>
 
-    <!-- Tabela de Despesas -->
     <table id="expense-table">
         <thead>
             <tr>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th>Data</th>
-                <th>Valor</th>
-                <th>Forma de Pagamento</th>
-                <th>Ações</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Value</th>
+                <th>Payment Method</th>
+                <th>Accions</th>
             </tr>
         </thead>
         <tbody>
-            <!-- As despesas serão carregadas aqui -->
         </tbody>
     </table>
 
-    <!-- Modal de Análise -->
     <div id="analysis-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeAnalysisModal()">&times;</span>
-            <h2>Análise de Despesas</h2>
+            <h2>Expense Analysis</h2>
             <h3></h3>
-            <h3>Total Gasto Registado: <span id="total-expenses">0.00 €</span></h3>
+            <h3>Total Recorded Expenditure: <span id="total-expenses">0.00 €</span></h3>
             <div class="chart-container">
                 <canvas id="expense-chart" class="chart"></canvas>
                 <canvas id="payment-method-chart" class="chart"></canvas>

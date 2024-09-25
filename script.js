@@ -1,26 +1,24 @@
-// Firebase Authentication
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
         loadExpenses(user.uid);
         document.getElementById('user-email').textContent = user.email;
     } else {
-        window.location = 'index.html';  // Redireciona para a página de login se não estiver autenticado
+        window.location = 'index.html';
     }
 });
 
-let expenseChart = null;  // Variável global para armazenar o gráfico de categorias
-let paymentMethodChart = null;  // Variável global para armazenar o gráfico de formas de pagamento
+let expenseChart = null;  
+let paymentMethodChart = null;
 
-// Carregar despesas do Firestore
 function loadExpenses(uid) {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block'; 
     db.collection('expenses').where('uid', '==', uid).get().then(snapshot => {
         const expenseTableBody = document.getElementById('expense-table').getElementsByTagName('tbody')[0];
-        expenseTableBody.innerHTML = '';  // Limpa a tabela
+        expenseTableBody.innerHTML = ''; 
 
         let totalAmount = 0;
         const categoryAmounts = {};
-        const paymentMethodCounts = {};  // Alterado para contar o número de vezes que cada método é utilizado
+        const paymentMethodCounts = {};  
 
         snapshot.forEach(doc => {
             const expense = doc.data();
@@ -28,54 +26,60 @@ function loadExpenses(uid) {
             row.insertCell(0).textContent = expense.description;
             row.insertCell(1).textContent = expense.category;
             row.insertCell(2).textContent = expense.date;
-
-            // Formatar e adicionar o símbolo de €
+        
             const amountCell = row.insertCell(3);
             const amount = parseFloat(expense.amount).toFixed(2);
             amountCell.textContent = `${amount} €`;
-
-            // Soma total das despesas
+        
             totalAmount += parseFloat(amount);
-
-            // Soma por categoria
+        
             if (categoryAmounts[expense.category]) {
                 categoryAmounts[expense.category] += parseFloat(amount);
             } else {
                 categoryAmounts[expense.category] = parseFloat(amount);
             }
-
-            // Contagem por forma de pagamento
+        
             if (paymentMethodCounts[expense.paymentMethod]) {
-                paymentMethodCounts[expense.paymentMethod] += 1;  // Incrementa a contagem
+                paymentMethodCounts[expense.paymentMethod] += 1;
             } else {
-                paymentMethodCounts[expense.paymentMethod] = 1;  // Inicializa a contagem
+                paymentMethodCounts[expense.paymentMethod] = 1;
             }
-
+        
             row.insertCell(4).textContent = expense.paymentMethod;
+        
             const actionsCell = row.insertCell(5);
-            actionsCell.innerHTML = `<button onclick="editExpense('${doc.id}')">Editar</button>
-                                     <button onclick="deleteExpense('${doc.id}')">Remover</button>`;
-        });
+            
+            // Criando os botões
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => editExpense(doc.id));
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Remove';
+            deleteButton.addEventListener('click', () => deleteExpense(doc.id));
+        
+            // Adicionando os botões à célula
+            actionsCell.appendChild(editButton);
+            actionsCell.appendChild(deleteButton);
+        });        
 
-        // Atualiza os gráficos e o total de despesas
         updateCategoryChart(categoryAmounts);
         updatePaymentMethodChart(paymentMethodCounts);
         document.getElementById('total-expenses').textContent = `${totalAmount.toFixed(2)} €`;
 
-        document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+        document.getElementById('loading-indicator').style.display = 'none'; 
     }).catch(error => {
         console.error("Erro ao carregar despesas:", error);
-        document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading em caso de erro
+        document.getElementById('loading-indicator').style.display = 'none';
     });
 }
 
-// Atualizar gráfico de formas de pagamento
 function updatePaymentMethodChart(paymentMethodCounts) {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block';
     const ctx = document.getElementById('payment-method-chart').getContext('2d');
 
     if (paymentMethodChart) {
-        paymentMethodChart.destroy();  // Destroi o gráfico anterior se existir
+        paymentMethodChart.destroy();
     }
 
     const paymentMethods = Object.keys(paymentMethodCounts);
@@ -95,16 +99,15 @@ function updatePaymentMethodChart(paymentMethodCounts) {
             responsive: true
         }
     });
-    document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'none';
 }
 
-// Atualizar gráfico de categorias
 function updateCategoryChart(categoryAmounts) {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block';
     const ctx = document.getElementById('expense-chart').getContext('2d');
 
     if (expenseChart) {
-        expenseChart.destroy();  // Destroi o gráfico anterior se existir
+        expenseChart.destroy();
     }
 
     const categories = Object.keys(categoryAmounts);
@@ -124,12 +127,12 @@ function updateCategoryChart(categoryAmounts) {
             responsive: true
         }
     });
-    document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'none';
 }
 
 // Criar ou atualizar uma despesa
 document.getElementById('expense-form').addEventListener('submit', (e) => {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block';
     e.preventDefault();
     const user = firebase.auth().currentUser;
     const expenseId = document.getElementById('expense-id').value;
@@ -138,7 +141,7 @@ document.getElementById('expense-form').addEventListener('submit', (e) => {
         description: document.getElementById('description').value,
         category: document.getElementById('category').value,
         date: document.getElementById('date').value,
-        amount: parseFloat(document.getElementById('amount').value).toFixed(2),  // Garantir 2 casas decimais
+        amount: parseFloat(document.getElementById('amount').value).toFixed(2),
         paymentMethod: document.getElementById('payment-method').value
     };
 
@@ -157,12 +160,12 @@ document.getElementById('expense-form').addEventListener('submit', (e) => {
             console.error("Erro ao criar despesa:", error);
         });
     }
-    document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'none';
 });
 
 // Editar despesa
 function editExpense(id) {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block'; 
     db.collection('expenses').doc(id).get().then(doc => {
         if (doc.exists) {
             const expense = doc.data();
@@ -170,29 +173,28 @@ function editExpense(id) {
             document.getElementById('description').value = expense.description;
             document.getElementById('category').value = expense.category;
             document.getElementById('date').value = expense.date;
-            document.getElementById('amount').value = parseFloat(expense.amount).toFixed(2);  // Garantir 2 casas decimais
+            document.getElementById('amount').value = parseFloat(expense.amount).toFixed(2);
             document.getElementById('payment-method').value = expense.paymentMethod;
             showExpenseForm();
         }
     }).catch(error => {
         console.error("Erro ao editar despesa:", error);
     });
-    document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'none';
 }
 
 // Remover despesa
 function deleteExpense(id) {
-    document.getElementById('loading-indicator').style.display = 'block'; // Mostra o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'block';
     const user = firebase.auth().currentUser;
     db.collection('expenses').doc(id).delete().then(() => {
         loadExpenses(user.uid);
     }).catch(error => {
         console.error("Erro ao remover despesa:", error);
     });
-    document.getElementById('loading-indicator').style.display = 'none'; // Esconde o indicador de loading
+    document.getElementById('loading-indicator').style.display = 'none';
 }
 
-// Mostrar e ocultar o formulário de despesas
 function showExpenseForm() {
     document.getElementById('expense-form-container').style.display = 'block';
 }
@@ -203,7 +205,6 @@ function closeExpenseForm() {
     document.getElementById('expense-id').value = '';
 }
 
-// Mostrar e ocultar o modal de análise
 function showAnalysisModal() {
     document.getElementById('analysis-modal').style.display = 'block';
 }
@@ -212,9 +213,8 @@ function closeAnalysisModal() {
     document.getElementById('analysis-modal').style.display = 'none';
 }
 
-// Logout do usuário
 function logout() {
     firebase.auth().signOut().then(() => {
-        window.location = 'index.html';  // Redireciona para a página de login após logout
+        window.location = 'index.html'; 
     });
 }
